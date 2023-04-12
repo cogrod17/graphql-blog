@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "CommonJS",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "typeRoots": ["src/@types", "node_modules/@types"]
+  },
+  // "file": ["graphql.d.ts", "custom.d.ts"],
+  "exclude": ["node_modules"],
+  "include": [
+    "src/*",
+    "./**/*.graphql",
+    "./custom.d.ts",
+    "src/graphql/schema/typeDefs/user.ts"
+  ]
+}
