@@ -15,7 +15,9 @@ exports.userResolver = {
     getUser: (args, { auth }) => __awaiter(void 0, void 0, void 0, function* () {
         if (!(auth === null || auth === void 0 ? void 0 : auth.id))
             return new Error("Auth Required");
-        const user = yield models_1.User.findOne({ email: args.email });
+        const user = yield models_1.User.findOne({
+            email: args.email,
+        });
         if (!user)
             throw new Error("No user found");
         return user;
@@ -34,10 +36,12 @@ exports.userResolver = {
         user.save();
         return user;
     }),
-    deleteUser: ({ userId }) => __awaiter(void 0, void 0, void 0, function* () {
+    deleteUser: ({ userId }, { auth }) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!(auth === null || auth === void 0 ? void 0 : auth.id))
+            return new Error("Auth Required");
         if (!userId)
             return new Error("Need to have user id");
-        const user = yield models_1.User.findById(userId);
+        const user = yield models_1.User.findById(auth.id);
         if (!user)
             throw new Error("No user found");
         user.deleteOne();

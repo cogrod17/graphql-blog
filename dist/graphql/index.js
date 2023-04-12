@@ -17,10 +17,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_graphql_1 = require("express-graphql");
 const index_js_1 = require("./schema/index.js");
 const resolvers_1 = require("./resolvers");
-exports.default = (0, express_graphql_1.graphqlHTTP)((req) => ({
-    schema: index_js_1.schema,
-    rootValue: resolvers_1.rootResolver,
-    graphiql: true,
-    context: req,
-}));
+exports.default = (0, express_graphql_1.graphqlHTTP)((req, res, params) => {
+    // console.log(params);
+    return {
+        schema: index_js_1.schema,
+        rootValue: resolvers_1.rootResolver,
+        graphiql: true,
+        context: req,
+    };
+});
 __exportStar(require("./schema"), exports);

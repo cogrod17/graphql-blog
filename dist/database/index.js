@@ -37,5 +37,5 @@ const dbName = process.env.NODE_ENV || "dev";
 const initDB = () => mongoose_1.default
     .connect(`mongodb+srv://${USER}:${DB_PASSWORD}@cluster0.1vvhhha.mongodb.net/${dbName}?retryWrites=true&w=majority`, options)
     .then((res) => console.log("database connected"))
-    .catch((err) => console.log("error connecting to database"));
+    .catch((err) => console.log("Error connecting to MongoDB"));
 exports.initDB = initDB;

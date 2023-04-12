@@ -2,7 +2,13 @@ import { Schema, model } from "mongoose";
 import crypto from "crypto";
 import jwt, { Secret } from "jsonwebtoken";
 import config from "../config";
-import { UserForClient, UserMethods, UserModel, UserType } from "../@types";
+import {
+  UserForClient,
+  UserMethods,
+  UserModel,
+  UserType,
+  IUser,
+} from "../@types";
 import { Post } from "./Post";
 
 const secret = config.secret;
@@ -19,7 +25,7 @@ export const UserSchema = new Schema<UserType, UserModel, UserMethods>(
     hash: String,
     salt: String,
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true } }
 );
 
 UserSchema.methods.setPassword = function (password: string): void {
@@ -59,6 +65,12 @@ UserSchema.methods.forClient = function (): UserForClient {
   };
 };
 
+UserSchema.virtual("posts", {
+  ref: "Post",
+  localField: "_id",
+  foreignField: "author",
+});
+
 UserSchema.pre(
   "deleteOne",
   { document: true, query: false },
@@ -68,4 +80,4 @@ UserSchema.pre(
   }
 );
 
-export const User = model<UserType, UserModel>("User", UserSchema);
+export const User = model<IUser>("User", UserSchema);

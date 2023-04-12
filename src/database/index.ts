@@ -17,4 +17,4 @@ export const initDB = () =>
       options
     )
     .then((res) => console.log("database connected"))
-    .catch((err) => console.log("error connecting to database"));
+    .catch((err) => console.log("Error connecting to MongoDB"));

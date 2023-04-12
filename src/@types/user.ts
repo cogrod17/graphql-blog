@@ -1,6 +1,7 @@
 import { Secret } from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { Model, Document } from "mongoose";
+import { IPost } from "./post";
 
 export type CreateUserType = {
   email: string;
@@ -18,6 +19,7 @@ export type UserType = {
   hash: string;
   salt: string;
   bio: string | null;
+  posts: IPost[];
   createdAt?: Date;
   updatedAt?: Date;
 };

@@ -1,3 +1,4 @@
+import { HydratedDocument } from "mongoose";
 import { IUser } from "../../@types";
 import { User } from "../../models";
 import { Request } from "express-jwt";
@@ -6,25 +7,27 @@ interface IUserService {
   getUser: (
     args: { email: string; auth: unknown },
     req: Request
-  ) => Promise<IUser | Error>;
-  getAllUsers: () => Promise<IUser[] | Error>;
+  ) => Promise<HydratedDocument<IUser> | Error>;
+  getAllUsers: () => Promise<HydratedDocument<IUser>[] | Error>;
   deleteUser: (
     args: { userId: string },
     req: Request
-  ) => Promise<IUser | Error>;
+  ) => Promise<HydratedDocument<IUser> | Error>;
   updateUser: (
     args: {
       email: string;
       bio: string;
     },
     req: Request
-  ) => Promise<IUser | Error>;
+  ) => Promise<HydratedDocument<IUser> | Error>;
 }
 
 export const userResolver: IUserService = {
   getUser: async (args, { auth }) => {
     if (!auth?.id) return new Error("Auth Required");
-    const user: IUser | null = await User.findOne({ email: args.email });
+    const user: HydratedDocument<IUser> | null = await User.findOne({
+      email: args.email,
+    });
     if (!user) throw new Error("No user found");
     return user;
   },
@@ -43,9 +46,10 @@ export const userResolver: IUserService = {
 
     return user;
   },
-  deleteUser: async ({ userId }) => {
+  deleteUser: async ({ userId }, { auth }) => {
+    if (!auth?.id) return new Error("Auth Required");
     if (!userId) return new Error("Need to have user id");
-    const user: IUser | null = await User.findById(userId);
+    const user: HydratedDocument<IUser> | null = await User.findById(auth.id);
     if (!user) throw new Error("No user found");
     user.deleteOne();
     return user;

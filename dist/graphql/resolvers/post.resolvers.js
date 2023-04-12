@@ -15,20 +15,53 @@ exports.postResolver = {
     createPost: ({ content }, { auth }) => __awaiter(void 0, void 0, void 0, function* () {
         if (!(auth === null || auth === void 0 ? void 0 : auth.id))
             return new Error("Auth Required");
-        const post = yield models_1.Post.create({
+        const post = new models_1.Post({
             content,
-            author_id: auth.id,
+            author: auth.id,
         });
+        try {
+            yield post.save();
+            return post.populate("author");
+        }
+        catch (e) {
+            return new Error(e);
+        }
+    }),
+    getPosts: ({ page = 1, limit = 10, keyword = "" }) => __awaiter(void 0, void 0, void 0, function* () {
+        const posts = yield models_1.Post.find({
+            content: { $regex: keyword },
+        })
+            .populate("author")
+            .limit(limit)
+            .skip((page - 1) * limit);
+        const count = posts.length;
+        return { posts, count, page, limit };
+    }),
+    getPostsByUser: ({ id = null }) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield models_1.User.findOne({
+            _id: id,
+        }).populate("posts");
+        if (!user)
+            return new Error("No User found");
+        return { posts: user.posts, user, count: user.posts.length };
+    }),
+    updatePost: ({ postId, content }, { auth }) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!(auth === null || auth === void 0 ? void 0 : auth.id))
+            return new Error("Auth Required");
+        const post = yield models_1.Post.findOneAndUpdate({ $and: [{ _id: postId }, { author: auth.id }] }, { content }, { new: true });
+        if (!post)
+            return new Error("No post found");
         yield post.save();
+        return post.populate("author");
+    }),
+    deletePost: ({ postId }, { auth }) => __awaiter(void 0, void 0, void 0, function* () {
+        if (!(auth === null || auth === void 0 ? void 0 : auth.id))
+            return new Error("Auth Required");
+        const post = yield models_1.Post.findOneAndDelete({
+            $and: [{ _id: postId }, { author: auth.id }],
+        });
+        if (!post)
+            return new Error("No post found");
         return post;
-    }),
-    getPost: () => __awaiter(void 0, void 0, void 0, function* () {
-        return new Error("somehting happpened");
-    }),
-    updatePost: () => __awaiter(void 0, void 0, void 0, function* () {
-        return new Error("somehting happpened");
-    }),
-    deletePost: () => __awaiter(void 0, void 0, void 0, function* () {
-        return new Error("somehting happpened");
     }),
 };

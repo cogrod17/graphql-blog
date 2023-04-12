@@ -29,7 +29,7 @@ exports.UserSchema = new mongoose_1.Schema({
     bio: String,
     hash: String,
     salt: String,
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true } });
 exports.UserSchema.methods.setPassword = function (password) {
     this.salt = crypto_1.default.randomBytes(17).toString("hex");
     this.hash = crypto_1.default
@@ -59,6 +59,11 @@ exports.UserSchema.methods.forClient = function () {
         bio: this.bio,
     };
 };
+exports.UserSchema.virtual("posts", {
+    ref: "Post",
+    localField: "_id",
+    foreignField: "author",
+});
 exports.UserSchema.pre("deleteOne", { document: true, query: false }, function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         yield Post_1.Post.deleteMany({ author_id: this._id });
