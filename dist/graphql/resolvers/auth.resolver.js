@@ -29,7 +29,7 @@ exports.authResolvers = {
             return err;
         }
     }),
-    login: (args, x, y) => __awaiter(void 0, void 0, void 0, function* () {
+    login: (args) => __awaiter(void 0, void 0, void 0, function* () {
         if (!args.email || !args.password)
             throw new Error("Email and password required");
         const user = yield models_1.User.findOne({ email: args.email });

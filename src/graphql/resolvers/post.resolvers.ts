@@ -27,7 +27,7 @@ const createPost: CreatePost = async ({ content }, { auth }) => {
 };
 
 type GetPosts = (args: GetPostsArgs) => Promise<GetPostsReturn | Error>;
-const getPosts = async ({ page = 1, limit = 10, keyword = "" }) => {
+const getPosts: GetPosts = async ({ page = 1, limit = 10, keyword = "" }) => {
   const posts: HydratedPost[] = await Post.find({
     content: { $regex: keyword },
   })

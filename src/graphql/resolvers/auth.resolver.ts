@@ -18,11 +18,7 @@ export const authResolvers = {
       return err;
     }
   },
-  login: async (
-    args: { email: string; password: string },
-    x: unknown,
-    y: unknown
-  ) => {
+  login: async (args: { email: string; password: string }) => {
     if (!args.email || !args.password)
       throw new Error("Email and password required");
 
